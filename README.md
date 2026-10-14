@@ -1,6 +1,12 @@
 # NCMIT - Leitor de Nota Fiscal com Supabase
 
-Este é um guia completo para configurar e rodar o projeto NCMIT em sua máquina local, agora com autenticação de usuários.
+Aplicação web para importar notas fiscais (XML), consultar os itens por NCM e estimar a carga tributária (IPI e MVA-ST), com autenticação de usuários e dados salvos no Supabase.
+
+> Este repositório é um fork de [NCMIT/ncmit-projeto-dev](https://github.com/NCMIT/ncmit-projeto-dev). Deploy: https://ncmit-projeto-dev.vercel.app
+
+**Tecnologias:** React, TypeScript, Vite, Supabase (Auth + PostgreSQL), Google Gemini API (função serverless na Vercel).
+
+Abaixo, o guia para configurar e rodar o projeto na sua máquina.
 
 ## Pré-requisitos
 
@@ -135,19 +141,20 @@ Este é um guia completo para configurar e rodar o projeto NCMIT em sua máquina
 
 ## Passo 2: Configuração do Projeto Local
 
-1.  **Crie o Arquivo de Ambiente**:
-    - Na raiz do seu projeto, crie um arquivo chamado `.env`.
-    - Adicione as chaves do Supabase que você copiou:
+1.  **Configure as credenciais do Supabase**:
+    - O projeto usa o Vite e lê as credenciais diretamente do arquivo `services/supabaseClient.ts` (não de um `.env`).
+    - Abra o arquivo e troque as constantes `supabaseUrl` e `supabaseAnonKey` pelo **Project URL** e pela chave **anon public** que você copiou no Passo 1.
+    - A chave `anon public` foi feita para ficar no front-end, desde que o Row Level Security esteja ativo (o script SQL acima já ativa).
 
-    ```
-    REACT_APP_SUPABASE_URL=SUA_URL_DO_PROJETO_SUPABASE
-    REACT_APP_SUPABASE_ANON_KEY=SUA_CHAVE_ANON_PUBLIC_DO_SUPABASE
-    ```
+2.  **Configure a chave da API de IA (cálculo de alíquotas)**:
+    - A função `api/get-tax-rates.ts` lê a variável de ambiente `GEMINI_API_KEY` no servidor.
+    - Ao hospedar na Vercel, cadastre `GEMINI_API_KEY` em *Settings > Environment Variables*. Nunca coloque essa chave no código nem em um arquivo versionado.
 
-2.  **Instale as Dependências**:
+3.  **Instale as Dependências**:
     - `npm install`
 
-3.  **Rode o Projeto**:
+4.  **Rode o Projeto**:
     - `npm run dev`
+    - Acesse `http://localhost:3000`.
 
 Agora você está pronto para usar o NCMIT! Crie uma conta e comece a fazer o upload de suas notas fiscais.
